@@ -111,7 +111,14 @@ namespace Nbaz1Lab
 
         public void AcceptButtonClicked()
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

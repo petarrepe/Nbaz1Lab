@@ -28,7 +28,7 @@ namespace Nbaz1Lab
 
 
                 var txtBox = new TextBox();
-                txtBox.Margin = new Thickness(20, 20, 20, 40);
+                txtBox.Margin = new Thickness(55, 0, 20, 80);
                 Grid.SetRow(txtBox, i);
                 Grid.SetColumn(txtBox, 2);
 
@@ -47,7 +47,14 @@ namespace Nbaz1Lab
 
         public void AcceptButtonClicked()
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public void Dispose(ref Grid mainGrid)

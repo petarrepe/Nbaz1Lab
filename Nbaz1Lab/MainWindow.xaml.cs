@@ -12,7 +12,7 @@ namespace Nbaz1Lab
         private string connString = String.Format("Server=192.168.56.12;Port=5432;" +
                 "User Id=postgres;Password=reverse;Database=postgres;");
         NpgsqlConnection conn;
-        private List<string> menuChoices = new List<string>() { "Search", "Add","Analysis" };
+        private List<string> menuChoices = new List<string>() { "Search", "Add", "Analysis" };
 
         public MainWindow()
         {
@@ -25,9 +25,20 @@ namespace Nbaz1Lab
         {
             conn = new NpgsqlConnection(connString);
             conn.Open();
-
-            //string sql = "SELECT * FROM simple_table";
-            //NpgsqlDataAdapter da = new NpgsqlDataAdapter(sql, conn);
+            
+            //  PRIMJER KORIŠTENJA
+            //using (var cmd = new NpgsqlCommand())
+            //{
+            //    cmd.Connection = conn;
+            //    cmd.CommandText = "SELECT * FROM test";
+            //    using (var reader = cmd.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            var x = reader[0];
+            //            var y = reader[1];
+            //        }
+            //    }
         }
 
         private void menuListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
