@@ -11,6 +11,8 @@ namespace Nbaz1Lab
 {
     internal class SearchVisualData : IVisualData
     {
+        private TextBox queryTextBox;
+        private TextBox userInputTextBox;
         private Dictionary<string, RadioButton> dictionaryofRadioButton = new Dictionary<string, RadioButton>();
         private Dictionary<string, RadioButton> dictionaryofRadioButton2 = new Dictionary<string, RadioButton>();
         public SearchVisualData(ref Grid mainGrid)
@@ -31,7 +33,7 @@ namespace Nbaz1Lab
             radio.Checked += new RoutedEventHandler(rb_Checked);
             Grid.SetRow(radio, 0);
             Grid.SetColumn(radio, 1);
-            radio.Margin = new Thickness(120, 50, 20, 0);
+            radio.Margin = new Thickness(100, 50, 20, 0);
             mainGrid.Children.Add(radio);
             dictionaryofRadioButton.Add("OR", radio);
 
@@ -41,7 +43,7 @@ namespace Nbaz1Lab
             radio.Checked += new RoutedEventHandler(rb_Checked);
             Grid.SetRow(radio, 0);
             Grid.SetColumn(radio, 2);
-            radio.Margin = new Thickness(450, 50, 20, 0);
+            radio.Margin = new Thickness(500, 50, 20, 0);
             mainGrid.Children.Add(radio);
             dictionaryofRadioButton2.Add("Morphology&Semantic", radio);
 
@@ -54,16 +56,27 @@ namespace Nbaz1Lab
             radio.Margin = new Thickness(650, 50, 20, 0);
             mainGrid.Children.Add(radio);
             dictionaryofRadioButton2.Add("Fuzzy", radio);
-        }
 
-        private void rb_Clicked(object sender, RoutedEventArgs e)
-        {
+            userInputTextBox = new TextBox();
+            userInputTextBox.Margin= new Thickness(50, 80, 50, 0);
+            Grid.SetRow(userInputTextBox, 1);
+            Grid.SetColumn(userInputTextBox, 1);
+            mainGrid.Children.Add(userInputTextBox);
 
-        }
+            var label = new TextBlock();
+            userInputTextBox.VerticalAlignment = VerticalAlignment.Bottom;
+            userInputTextBox.VerticalContentAlignment = VerticalAlignment.Bottom;
+            Grid.SetRow(label, 1);
+            label.Text = "Search:";
+            Grid.SetColumn(label, 1);
+            mainGrid.Children.Add(label);
 
-        private void rb_UnChecked(object sender, RoutedEventArgs e)
-        {
-
+            queryTextBox = new TextBox();
+            userInputTextBox.Margin = new Thickness(0, 20, 50, 0);
+            userInputTextBox.VerticalAlignment = VerticalAlignment.Top;
+            Grid.SetRow(queryTextBox, 2);
+            Grid.SetColumn(queryTextBox, 1);
+            mainGrid.Children.Add(queryTextBox);
         }
 
         private void rb_Checked(object sender, RoutedEventArgs e)
@@ -97,6 +110,11 @@ namespace Nbaz1Lab
         public void Dispose(ref Grid mainGrid)
         {
             mainGrid.Children.RemoveRange(2, mainGrid.Children.Count - 2);
+        }
+
+        public void AcceptButtonClicked()
+        {
+            throw new NotImplementedException();
         }
     }
 }

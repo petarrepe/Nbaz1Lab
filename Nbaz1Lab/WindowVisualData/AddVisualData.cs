@@ -12,6 +12,11 @@ namespace Nbaz1Lab
     internal class AddVisualData : IVisualData
     {
         internal List<string> typeOfData = new List<string>() { "Title", "Keywords", "Summary", "Body"};
+        private TextBox titleTextBox;
+        private TextBox keywordsTextBox;
+        private TextBox summaryTextBox;
+        private TextBox bodyTextBox;
+
         public AddVisualData(ref Grid mainGrid)
         {
             for (int i = 0; i < typeOfData.Count(); i++)
@@ -22,9 +27,8 @@ namespace Nbaz1Lab
                 Grid.SetColumn(textBlockTemp, 1);
 
                 mainGrid.Children.Add(textBlockTemp);
-            }
-            for (int i = 0; i < typeOfData.Count(); i++)
-            {
+
+
                 var txtBox = new TextBox();
                 txtBox.Margin = new Thickness(20, 20, 20, 40);
                 Grid.SetRow(txtBox, i);
@@ -35,8 +39,17 @@ namespace Nbaz1Lab
                 txtBox.Tag = typeOfData[i];
 
                 mainGrid.Children.Add(txtBox);
-            }
 
+                if (i == 0) titleTextBox = txtBox;
+                if (i == 1) keywordsTextBox = txtBox;
+                if (i == 2) summaryTextBox = txtBox;
+                if (i == 3) bodyTextBox = txtBox;
+            }
+        }
+
+        public void AcceptButtonClicked()
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose(ref Grid mainGrid)

@@ -15,6 +15,11 @@ namespace Nbaz1Lab
 
         }
 
+        public void AcceptButtonClicked()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose(ref Grid mainGrid)
         {
             mainGrid.Children.RemoveRange(2, mainGrid.Children.Count - 2);

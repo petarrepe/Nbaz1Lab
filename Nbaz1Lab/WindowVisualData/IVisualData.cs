@@ -10,7 +10,7 @@ namespace Nbaz1Lab.WindowVisualData
     public interface IVisualData
     {
         void Dispose(ref System.Windows.Controls.Grid mainGrid);
-
+        void AcceptButtonClicked();
     }
     
 }

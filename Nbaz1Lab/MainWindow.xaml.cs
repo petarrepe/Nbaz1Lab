@@ -50,5 +50,13 @@ namespace Nbaz1Lab
                     break;
             }
         }
+
+        private void acceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (visualData != null)
+            {
+                visualData.AcceptButtonClicked();
+            }
+        }
     }
 }

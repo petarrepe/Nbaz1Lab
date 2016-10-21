@@ -22,7 +22,7 @@
         <Grid Margin="0" Background="#FFE4E4E4" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="4">
             <ListBox x:Name="menuListBox" Height="Auto" Margin="0,50,0,0" VerticalAlignment="Top" SelectionChanged="menuListBox_SelectionChanged"/>
         </Grid>
-        <Button x:Name="acceptButton" Content="Potvrdi" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,20" Grid.Row="3" VerticalAlignment="Bottom" Width="75"/>
+        <Button x:Name="acceptButton" Content="Potvrdi" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,20" Grid.Row="3" VerticalAlignment="Bottom" Width="75" Click="acceptButton_Click"/>
 
     </Grid>
 </Window>
