@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WindowVisualData\AddVisualData.cs" />
+    <Compile Include="WindowVisualData\AnalysisVisualData.cs" />
+    <Compile Include="WindowVisualData\SearchVisualData.cs" />
+    <Compile Include="WindowVisualData\IVisualData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

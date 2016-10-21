@@ -6,22 +6,23 @@
         xmlns:local="clr-namespace:Nbaz1Lab"
         mc:Ignorable="d"
         Title="NBAZ" Height="350" Width="525" WindowState="Maximized">
-    <Grid>
+    <Grid x:Name="MainGrid">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="2*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
         <Grid Margin="0" Background="#FFE4E4E4" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="4">
             <ListBox x:Name="menuListBox" Height="Auto" Margin="0,50,0,0" VerticalAlignment="Top" SelectionChanged="menuListBox_SelectionChanged"/>
         </Grid>
+        <Button x:Name="acceptButton" Content="Potvrdi" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,20" Grid.Row="3" VerticalAlignment="Bottom" Width="75"/>
 
     </Grid>
 </Window>
