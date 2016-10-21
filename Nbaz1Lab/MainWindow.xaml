@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nbaz1Lab"
         mc:Ignorable="d"
-        Title="NBAZ" Height="350" Width="525" WindowState="Maximized">
+        Title="NBAZ" Height="350" Width="525" WindowState="Maximized" Closing="Window_Closing">
     <Grid x:Name="MainGrid">
 
         <Grid.ColumnDefinitions>

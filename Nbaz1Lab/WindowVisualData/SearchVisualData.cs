@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -57,19 +55,18 @@ namespace Nbaz1Lab
             mainGrid.Children.Add(radio);
             dictionaryofRadioButton2.Add("Fuzzy", radio);
 
-            userInputTextBox = new TextBox();
-            userInputTextBox.Margin= new Thickness(50, 80, 50, 0);
-            Grid.SetRow(userInputTextBox, 1);
-            Grid.SetColumn(userInputTextBox, 1);
-            mainGrid.Children.Add(userInputTextBox);
-
             var label = new TextBlock();
-            userInputTextBox.VerticalAlignment = VerticalAlignment.Bottom;
-            userInputTextBox.VerticalContentAlignment = VerticalAlignment.Bottom;
             Grid.SetRow(label, 1);
             label.Text = "Search:";
             Grid.SetColumn(label, 1);
             mainGrid.Children.Add(label);
+
+            userInputTextBox = new TextBox();
+            userInputTextBox.IsEnabled = true;
+            userInputTextBox.Margin= new Thickness(50, 0, 50, 0);
+            Grid.SetRow(userInputTextBox, 1);
+            Grid.SetColumn(userInputTextBox, 1);
+            mainGrid.Children.Add(userInputTextBox);
 
             queryTextBox = new TextBox();
             userInputTextBox.Margin = new Thickness(0, 20, 50, 0);
