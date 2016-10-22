@@ -49,7 +49,11 @@ namespace Nbaz1Lab
         {
             try
             {
-                throw new NotImplementedException();
+                if (DatabaseHelper.Insert("Document", bodyTextBox.Text.ToString(), summaryTextBox.Text, "{"+keywordsTextBox.Text+"}", "{" + titleTextBox.Text + "}") == true)
+                {
+                    MessageBox.Show("Uspješno uneseno");
+                    Flush();
+                }
             }
             catch (Exception ex)
             {
@@ -60,6 +64,14 @@ namespace Nbaz1Lab
         public void Dispose(ref Grid mainGrid)
         {
             mainGrid.Children.RemoveRange(2, mainGrid.Children.Count - 2);
+        }
+
+        private void Flush()
+        {
+            bodyTextBox.Text = "";
+            summaryTextBox.Text = "";
+            keywordsTextBox.Text = "";
+            titleTextBox.Text = "";
         }
     }
 }

@@ -9,9 +9,6 @@ namespace Nbaz1Lab
     public partial class MainWindow : Window
     {
         private IVisualData visualData;
-        private string connString = String.Format("Server=192.168.56.12;Port=5432;" +
-                "User Id=postgres;Password=reverse;Database=postgres;");
-        NpgsqlConnection conn;
         private List<string> menuChoices = new List<string>() { "Search", "Add", "Analysis" };
 
         public MainWindow()
@@ -22,10 +19,7 @@ namespace Nbaz1Lab
         }
 
         private void OpenDatabaseConnection()
-        {
-            conn = new NpgsqlConnection(connString);
-            conn.Open();
-            
+        {         
             //  PRIMJER KORIŠTENJA
             //using (var cmd = new NpgsqlCommand())
             //{
@@ -75,7 +69,7 @@ namespace Nbaz1Lab
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            conn.Close();
+            //conn.Close();
         }
     }
 }
