@@ -139,9 +139,35 @@ namespace Nbaz1Lab
             return returnList;
         }
 
-        internal static NpgsqlDataReader QueryFuzzy(string query)
+        internal static Tuple<List<string>, List<float>, List<float>, List<float>, List<float>> QueryFuzzy(string query)
         {
-            throw new NotImplementedException();
+            List<string> listOfDocTitlesBolded = new List<string>();
+            List<float> listOfSimilarityTitle = new List<float>();
+            List<float> listOfSimilarityKeywords = new List<float>();
+            List<float> listOfSimilarityBody = new List<float>();
+            List<float> listOfSimilaritySummary = new List<float>();
+
+            conn = new NpgsqlConnection(connString);
+
+            conn.Open();
+
+            using (var cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = query;
+
+                using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
+                    {
+                        listOfDocTitlesBolded.Add(reader.GetString(0));
+                        listOfSimilarityTitle.Add(reader.GetFloat(1));
+                        listOfSimilarityKeywords.Add(reader.GetFloat(3));
+                        listOfSimilarityBody.Add(reader.GetFloat(2));
+                        listOfSimilaritySummary.Add(reader.GetFloat(4));
+                    }
+                conn.Close();
+            }
+            return new Tuple<List<string>, List<float>, List<float>, List<float>, List<float>>(listOfDocTitlesBolded, listOfSimilarityTitle, listOfSimilarityKeywords, listOfSimilarityBody, listOfSimilaritySummary);
         }
 
         private static string SplitText(string queryText, string logicalOperator)
@@ -176,9 +202,29 @@ namespace Nbaz1Lab
 
         internal static string FuzzySearchQueryBuilder(string boolOperator, string queryText)
         {
-            StringBuilder sb = new StringBuilder();
+            string searchTextClean = SplitText(queryText, boolOperator);
+            List<string> listofPhrases = ProccessSearchTextClean(searchTextClean);
 
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder("SELECT \"title\", similarity (lower ('"+searchTextClean+ "'), lower (\"title\")) rank, similarity (lower ('"+searchTextClean+"'), lower (\"body\")) ");
+            sb.Append(", similarity(lower('"+searchTextClean+ "'), lower (\"keywords\"))");
+            sb.Append(", similarity(lower('"+searchTextClean+ "'), lower (\"summary\"))");
+            sb.Append(" FROM \"Document\" WHERE ");
+
+            for (int i = 0; i < listofPhrases.Count; i++)
+            {
+                sb.Append("(similarity(lower('" + listofPhrases.ElementAt(i) + "'), lower (\"title\")) > 0.1 AND  ");
+                sb.Append("similarity(lower('" + listofPhrases.ElementAt(i) + "'), lower (\"keywords\")) > 0.1 AND  ");
+                sb.Append("similarity(lower('" + listofPhrases.ElementAt(i) + "'), lower (\"summary\")) > 0.1 AND  ");
+                sb.Append("similarity(lower('" + listofPhrases.ElementAt(i) + "'), lower (\"body\")) > 0.1 ) ");
+                if (i != listofPhrases.Count - 1)
+                {
+                    sb.Append((boolOperator == "|") ? " OR " : " AND ");
+                }
+
+            }
+            sb.Append(" ORDER BY rank DESC");
+
+            return sb.ToString();
         }
     }
 }

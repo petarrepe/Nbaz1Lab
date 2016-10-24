@@ -138,8 +138,8 @@ namespace Nbaz1Lab
                 else
                 {
                     query = DatabaseHelper.FuzzySearchQueryBuilder(logicalOperator, userInputTextBox.Text);
-                    //NpgsqlDataReader itemsRetrieved = DatabaseHelper.QueryFuzzy(query);
-                    //DisplayResultsOnScreen(itemsRetrieved);
+                    Tuple <List<string>, List<float>, List<float>, List<float>, List<float>> itemsRetrieved = DatabaseHelper.QueryFuzzy(query);
+                    DisplayResultsOnScreenFuzzy(itemsRetrieved);
                 }
 
                 DisplayQueryOnScreen(query);
@@ -150,35 +150,65 @@ namespace Nbaz1Lab
             }
         }
 
-        private void DisplayResultsOnScreenMorphologic(Tuple<List<string>, List<float>> itemsRetrieved)
+        private void DisplayResultsOnScreenFuzzy(Tuple<List<string>, List<float>, List<float>, List<float>, List<float>> itemsRetrieved)
         {
-            if (dictionaryofRadioButton2.Values.First().IsChecked == true)//morphology search
+            List<string> listOfDocTitlesBolded = new List<string>(itemsRetrieved.Item1);
+            List<float> listOfSimilarityTitle = new List<float>(itemsRetrieved.Item2);
+            List<float> listOfSimilarityKeywords = new List<float>(itemsRetrieved.Item3);
+            List<float> listOfSimilarityBody = new List<float>(itemsRetrieved.Item4);
+            List<float> listOfSimilaritySummary = new List<float>(itemsRetrieved.Item5);
+
+            resultsTextBlock.Text += "Number of documents retrieved: " + listOfDocTitlesBolded.Count + "\n";
+
+            for (int i = 0; i < listOfDocTitlesBolded.Count; i++)
             {
-                List<string> listOfDocTitlesBolded = new List<string>(itemsRetrieved.Item1);
-                List<float> listOfDocRanks = new List<float>(itemsRetrieved.Item2);
 
-                resultsTextBlock.Text += "Number of documents retrieved: " + listOfDocRanks.Count + "\n";
+                var parts = listOfDocTitlesBolded[i].Split(new[] { "<b>", "</b>", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                for (int i = 0; i < listOfDocTitlesBolded.Count; i++)
+                for (int j = 0; j < parts.Count(); j++)
                 {
+                    bool isbold = userInputTextBox.Text.Contains(parts[j]) ? true : false;
 
-                    var parts = listOfDocTitlesBolded[i].Split(new[] { "<b>", "</b>", " " }, StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int j = 0; j < parts.Count(); j++)
-                    {
-                        bool isbold = userInputTextBox.Text.Contains(parts[j]) ? true : false;
-
-                        if (isbold) resultsTextBlock.Inlines.Add(new Run(parts[j]) { FontWeight = FontWeights.Bold });
-                        else resultsTextBlock.Inlines.Add(new Run(parts[j]));
-                        resultsTextBlock.Inlines.Add(new Run(" "));
-                    }
-                    //resultsTextBlock.Text += " " + listOfDocRanks[i] + "\n";
-                    resultsTextBlock.Inlines.Add(new Run(listOfDocRanks[i] + "\n"));
-                    resultsTextBlock.TextWrapping = TextWrapping.Wrap;
-
+                    if (isbold) resultsTextBlock.Inlines.Add(new Run(parts[j]) { FontWeight = FontWeights.Bold });
+                    else resultsTextBlock.Inlines.Add(new Run(parts[j]));
+                    resultsTextBlock.Inlines.Add(new Run(" "));
                 }
 
+                resultsTextBlock.Inlines.Add(new Run("   "+listOfSimilarityTitle[i] + "             "));
+                resultsTextBlock.Inlines.Add(new Run(listOfSimilarityKeywords[i] + "             "));
+                resultsTextBlock.Inlines.Add(new Run(listOfSimilarityBody[i] + "             "));
+                resultsTextBlock.Inlines.Add(new Run(listOfSimilaritySummary[i] + "\n"));
+                resultsTextBlock.TextWrapping = TextWrapping.Wrap;
             }
+        }
+
+
+        private void DisplayResultsOnScreenMorphologic(Tuple<List<string>, List<float>> itemsRetrieved)
+        {
+            List<string> listOfDocTitlesBolded = new List<string>(itemsRetrieved.Item1);
+            List<float> listOfDocRanks = new List<float>(itemsRetrieved.Item2);
+
+            resultsTextBlock.Text += "Number of documents retrieved: " + listOfDocRanks.Count + "\n";
+
+            for (int i = 0; i < listOfDocTitlesBolded.Count; i++)
+            {
+
+                var parts = listOfDocTitlesBolded[i].Split(new[] { "<b>", "</b>", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int j = 0; j < parts.Count(); j++)
+                {
+                    bool isbold = userInputTextBox.Text.Contains(parts[j]) ? true : false;
+
+                    if (isbold) resultsTextBlock.Inlines.Add(new Run(parts[j]) { FontWeight = FontWeights.Bold });
+                    else resultsTextBlock.Inlines.Add(new Run(parts[j]));
+                    resultsTextBlock.Inlines.Add(new Run(" "));
+                }
+                //resultsTextBlock.Text += " " + listOfDocRanks[i] + "\n";
+                resultsTextBlock.Inlines.Add(new Run(listOfDocRanks[i] + "\n"));
+                resultsTextBlock.TextWrapping = TextWrapping.Wrap;
+
+            }
+
         }
 
         private void DisplayQueryOnScreen(string query)
