@@ -122,7 +122,8 @@ namespace Nbaz1Lab
         {
             string logicalOperator = dictionaryofRadioButton.Values.First().IsChecked == true ? "&" : "|";
 
-            if (resultsTextBlock.Text.Length > 2) return;
+            resultsTextBlock.Text = "";
+            queryTextBox.Text = "";
 
             try
             {
