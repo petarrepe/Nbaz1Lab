@@ -1,9 +1,11 @@
 ﻿using Nbaz1Lab.WindowVisualData;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace Nbaz1Lab
 {
@@ -13,6 +15,7 @@ namespace Nbaz1Lab
         private TextBox userInputTextBox;
         private Dictionary<string, RadioButton> dictionaryofRadioButton = new Dictionary<string, RadioButton>();
         private Dictionary<string, RadioButton> dictionaryofRadioButton2 = new Dictionary<string, RadioButton>();
+        private TextBlock resultsTextBlock;
         public SearchVisualData(ref Grid mainGrid)
         {
             RadioButton radio = new RadioButton();
@@ -74,6 +77,12 @@ namespace Nbaz1Lab
             Grid.SetRow(queryTextBox, 2);
             Grid.SetColumn(queryTextBox, 1);
             mainGrid.Children.Add(queryTextBox);
+
+            resultsTextBlock = new TextBlock();
+            Grid.SetRow(resultsTextBlock, 3);
+            Grid.SetColumn(resultsTextBlock, 1);
+            resultsTextBlock.Margin = new Thickness(0, 50, 0, 0);
+            mainGrid.Children.Add(resultsTextBlock);
         }
 
         private void rb_Checked(object sender, RoutedEventArgs e)
@@ -109,16 +118,73 @@ namespace Nbaz1Lab
             mainGrid.Children.RemoveRange(2, mainGrid.Children.Count - 2);
         }
 
-        public void AcceptButtonClicked()
+        public void AcceptButtonClicked() //FIXME : code duplication
         {
+            string logicalOperator = dictionaryofRadioButton.Values.First().IsChecked == true ? "&" : "|";
+
+            if (resultsTextBlock.Text.Length > 2) return;
+
             try
             {
-                throw new NotImplementedException();
+                string query;
+                if (dictionaryofRadioButton2.Values.First().IsChecked == true)
+                {
+                    query = DatabaseHelper.MorphologySearchQueryBuilder(logicalOperator, userInputTextBox.Text);
+
+                    Tuple<List<string>, List<float>> itemsRetrieved = DatabaseHelper.QueryMorphologic(query);
+                    DisplayResultsOnScreenMorphologic(itemsRetrieved);
+                }
+                else
+                {
+                    query = DatabaseHelper.FuzzySearchQueryBuilder(logicalOperator, userInputTextBox.Text);
+                    //NpgsqlDataReader itemsRetrieved = DatabaseHelper.QueryFuzzy(query);
+                    //DisplayResultsOnScreen(itemsRetrieved);
+                }
+
+                DisplayQueryOnScreen(query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void DisplayResultsOnScreenMorphologic(Tuple<List<string>, List<float>> itemsRetrieved)
+        {
+            if (dictionaryofRadioButton2.Values.First().IsChecked == true)//morphology search
+            {
+                List<string> listOfDocTitlesBolded = new List<string>(itemsRetrieved.Item1);
+                List<float> listOfDocRanks = new List<float>(itemsRetrieved.Item2);
+
+                resultsTextBlock.Text += "Number of documents retrieved: " + listOfDocRanks.Count + "\n";
+
+                for (int i = 0; i < listOfDocTitlesBolded.Count; i++)
+                {
+
+                    var parts = listOfDocTitlesBolded[i].Split(new[] { "<b>", "</b>", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (int j = 0; j < parts.Count(); j++)
+                    {
+                        bool isbold = userInputTextBox.Text.Contains(parts[j]) ? true : false;
+
+                        if (isbold) resultsTextBlock.Inlines.Add(new Run(parts[j]) { FontWeight = FontWeights.Bold });
+                        else resultsTextBlock.Inlines.Add(new Run(parts[j]));
+                        resultsTextBlock.Inlines.Add(new Run(" "));
+                    }
+                    //resultsTextBlock.Text += " " + listOfDocRanks[i] + "\n";
+                    resultsTextBlock.Inlines.Add(new Run(listOfDocRanks[i] + "\n"));
+                    resultsTextBlock.TextWrapping = TextWrapping.Wrap;
+
+                }
+
+            }
+        }
+
+        private void DisplayQueryOnScreen(string query)
+        {
+            queryTextBox.Text = query.Replace("FROM","\nFROM").Replace("WHERE", "\nWHERE").Replace("ORDER", "\nORDER").Replace("AND", "AND\n");
+            queryTextBox.FontSize = 18;
+            queryTextBox.AcceptsReturn = true;
         }
     }
 }

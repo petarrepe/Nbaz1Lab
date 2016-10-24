@@ -49,7 +49,7 @@ namespace Nbaz1Lab
         {
             try
             {
-                if (DatabaseHelper.Insert("Document", bodyTextBox.Text.ToString(), summaryTextBox.Text, "{"+keywordsTextBox.Text+"}", "{" + titleTextBox.Text + "}") == true)
+                if (DatabaseHelper.Insert("Document", bodyTextBox.Text.ToString(), summaryTextBox.Text, keywordsTextBox.Text, titleTextBox.Text ) == true)
                 {
                     MessageBox.Show("Uspješno uneseno");
                     Flush();
