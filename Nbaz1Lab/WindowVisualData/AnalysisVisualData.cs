@@ -26,7 +26,7 @@ namespace Nbaz1Lab
             Grid.SetRow(dateLabel, 1);
             Grid.SetColumn(dateLabel, 1);
             dateLabel.HorizontalAlignment = HorizontalAlignment.Center;
-            dateLabel.Text = "Day from - Day to";
+            dateLabel.Text = "Day from - Day to           DD.MM.YYYY hh:mm:ss";
             mainGrid.Children.Add(dateLabel);
 
             var radio = new RadioButton();
@@ -56,7 +56,7 @@ namespace Nbaz1Lab
             Grid.SetColumn(txtBox, 1);
             txtBox.AcceptsReturn = true;
             txtBox.IsReadOnly = false;
-            datePickerTo = txtBox;
+            datePickerFrom = txtBox;
             mainGrid.Children.Add(txtBox);
 
             txtBox = new TextBox();
@@ -68,7 +68,7 @@ namespace Nbaz1Lab
             Grid.SetColumn(txtBox, 1);
             txtBox.AcceptsReturn = true;
             txtBox.IsReadOnly = false;
-            datePickerFrom = txtBox;
+            datePickerTo = txtBox;
             mainGrid.Children.Add(txtBox);
         }
 
@@ -76,7 +76,34 @@ namespace Nbaz1Lab
         {
             try
             {
-                throw new NotImplementedException();
+                string dateFrom = datePickerFrom.Text;
+                string dateTo = datePickerTo.Text;
+                string query;
+                DateTime dt = Convert.ToDateTime(dateFrom);
+                DateTime dt2 = Convert.ToDateTime(dateTo);
+
+                double differenceInDays = ((dt2 - dt).TotalDays);
+                string tempTablename;
+
+                if (granulateByDay.IsChecked == true)
+                {
+                    query = DatabaseHelper.TimeAnalysisQueryBuilder("day", dt, dt2);
+                    DatabaseHelper.CreateTempTableDays(differenceInDays, dt);
+                    var result = DatabaseHelper.QueryAnalysis(query);
+                    tempTablename = "days";
+                    //DisplayResultsOnScreenMorphologic(itemsRetrieved);
+                }
+                else
+                {
+                    query = DatabaseHelper.TimeAnalysisQueryBuilder("hour", dt, dt2);
+                    DatabaseHelper.CreateTempTableHours();
+                    tempTablename = "hours";
+
+                }
+                DatabaseHelper.DeleteTempTable(tempTablename);
+                //DisplayQueryOnScreen(query);
+
+
             }
             catch (Exception ex)
             {

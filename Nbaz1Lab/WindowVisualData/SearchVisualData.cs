@@ -141,6 +141,7 @@ namespace Nbaz1Lab
                     Tuple <List<string>, List<float>, List<float>, List<float>, List<float>> itemsRetrieved = DatabaseHelper.QueryFuzzy(query);
                     DisplayResultsOnScreenFuzzy(itemsRetrieved);
                 }
+                DatabaseHelper.SaveQueryToDb(userInputTextBox.Text);
 
                 DisplayQueryOnScreen(query);
             }

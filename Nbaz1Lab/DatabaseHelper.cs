@@ -139,6 +139,115 @@ namespace Nbaz1Lab
             return returnList;
         }
 
+        internal static object QueryAnalysis(string query)
+        {
+
+            using (var cmd = new NpgsqlCommand(query, conn))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+
+                    }
+                }
+
+            }
+            return "test";
+        }
+
+        internal static void CreateTempTableHours()
+        {
+            conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            StringBuilder sb = new StringBuilder("CREATE TEMP TABLE hours(hour text);"); //FIXME : tip podataka ovdje
+            NpgsqlCommand cmd = new NpgsqlCommand(sb.ToString(), conn);
+            cmd.ExecuteNonQuery();
+
+            sb = new StringBuilder();
+            for (int i = 0; i < 24; i++)
+            {
+                sb.AppendLine("INSERT INTO hours VALUES ('" +i+ "-" +(i+1)+  "');");
+            }
+
+                cmd = new NpgsqlCommand(sb.ToString(), conn);
+                cmd.ExecuteNonQuery();
+        }
+
+        internal static void CreateTempTableDays(double differenceInDays, DateTime dateFrom)
+        {
+            conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            StringBuilder sb = new StringBuilder("CREATE TEMP TABLE days(day date);");
+            NpgsqlCommand cmd = new NpgsqlCommand(sb.ToString(), conn);
+            cmd.ExecuteNonQuery();
+
+
+            sb = new StringBuilder();
+            for (int i = 0; i < differenceInDays; i++)
+            {
+                sb.AppendLine("INSERT INTO days VALUES ('"+ dateFrom.ToString("dd-MM-yyyy") + "');");
+                dateFrom.AddDays(1);
+            }
+            cmd = new NpgsqlCommand(sb.ToString(), conn);
+            cmd.ExecuteNonQuery();
+
+        }
+
+        internal static void DeleteTempTable(string tempTablename)
+        {
+
+            StringBuilder sb = new StringBuilder("DROP TABLE "+tempTablename);
+            NpgsqlCommand cmd = new NpgsqlCommand(sb.ToString(), conn);
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        internal static void SaveQueryToDb(string text)
+        {
+            conn = new NpgsqlConnection(connString);
+            conn.Open();
+
+            StringBuilder sb = new StringBuilder("INSERT INTO \"Log\" (query, \"dateTime\") VALUES ('"+text+"', '"+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")+"'); ");
+            NpgsqlCommand cmd = new NpgsqlCommand(sb.ToString(), conn);
+            int affectedRows = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+        }
+
+        internal static string TimeAnalysisQueryBuilder(string v, DateTime dateFrom, DateTime dateTo)
+        {
+            StringBuilder sb = new StringBuilder();
+            double differenceInDays = ((dateTo - dateFrom).TotalDays);
+
+            sb.Append("SELECT * from crosstab('SELECT query, \"dateTime\", CAST(count(*) AS int) as number from \"Log\"");
+            sb.Append(" WHERE \"dateTime\" BETWEEN to_timestamp(" + dateFrom.ToString("MM-dd-yyyy") + ") AND to_timestamp(" + dateTo.ToString("MM-dd-yyyy") + ") GROUP BY query, \"dateTime\" ORDER BY query, \"dateTime\"', ");
+
+            if (v == "hour")
+            {
+                sb.Append("'SELECT hour from hours order by hour') AS pivotTable(query text ");
+                for (int i = 0; i < differenceInDays; i++)
+                {
+                    sb.Append(", " + i+"-"+(i+1) + " INT");
+                }
+                sb.Append(");");
+            }
+            else
+            {
+                sb.Append("'SELECT day from days order by day') AS pivotTable(query text ");
+                    for(int i = 0; i < differenceInDays; i++)
+                {
+                    sb.Append(", d"+i+" INT");
+                }
+                sb.Append(");");
+            }
+            return sb.ToString();
+        }
+
         internal static Tuple<List<string>, List<float>, List<float>, List<float>, List<float>> QueryFuzzy(string query)
         {
             List<string> listOfDocTitlesBolded = new List<string>();
